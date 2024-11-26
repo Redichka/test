@@ -1,0 +1,44 @@
+name: Go CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Клонируем репозиторий
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Устанавливаем Go
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.16
+
+      # Устанавливаем зависимости
+      - name: Install Dependencies
+        run: go mod tidy
+
+      # Запускаем тесты (если они есть)
+      - name: Run Tests
+        run: go test ./...
+
+      # Сборка Docker-образа
+      - name: Build Docker Image
+        run: |
+          docker build -t my-go-app:latest .
+          echo "Docker image built successfully."
+
+      # Запуск Docker-контейнера
+      - name: Deploy Application
+        run: |
+          docker run -d --name my-go-app -p 8000:8000 my-go-app:latest
+          echo "Application deployed successfully."
