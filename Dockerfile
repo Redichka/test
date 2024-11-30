@@ -8,7 +8,7 @@ WORKDIR /app
 ENV GO111MODULE=off
 
 # Копируем исходный код в контейнер
-COPY main.go .
+COPY . .
 
 # Компилируем приложение
 RUN go build -o app .
